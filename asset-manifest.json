@@ -1,16 +1,10 @@
 {
   "files": {
-    "main.css": "/wiki-noder/static/css/main.073c9b0a.css",
-    "main.js": "/wiki-noder/static/js/main.d01ade44.js",
-    "static/js/787.28cb0dcd.chunk.js": "/wiki-noder/static/js/787.28cb0dcd.chunk.js",
-    "static/media/logo.svg": "/wiki-noder/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "main.js": "/wiki-noder/static/js/main.b5aa5c9f.js",
     "index.html": "/wiki-noder/index.html",
-    "main.073c9b0a.css.map": "/wiki-noder/static/css/main.073c9b0a.css.map",
-    "main.d01ade44.js.map": "/wiki-noder/static/js/main.d01ade44.js.map",
-    "787.28cb0dcd.chunk.js.map": "/wiki-noder/static/js/787.28cb0dcd.chunk.js.map"
+    "main.b5aa5c9f.js.map": "/wiki-noder/static/js/main.b5aa5c9f.js.map"
   },
   "entrypoints": [
-    "static/css/main.073c9b0a.css",
-    "static/js/main.d01ade44.js"
+    "static/js/main.b5aa5c9f.js"
   ]
 }
