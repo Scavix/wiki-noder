@@ -1,0 +1,36 @@
+.link {
+  stroke: #999999;
+  stroke-opacity: 0.6;
+  fill: none;
+}
+
+#chart {
+  text-align: center;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.selection {
+  fill: none;
+}
+
+.node {
+  fill: #33913b;
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.node:hover,
+.highlight {
+  fill: steelblue;
+}
+
+.label {
+  font-size: 12px;
+}
+
+body {
+  overflow: hidden;
+}
