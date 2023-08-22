@@ -32,51 +32,54 @@ function WikipediaPage() {
         setNodesAmout(Array.from(new Set([...firstPage, ...secondPage])).length);
         setLinksAmout(Array.from(new Set(secondPageLinks)).length);
         loadGraph(Array.from(new Set([...firstPage, ...secondPage])), Array.from(new Set(secondPageLinks)));
+        setLoading(false);
+        return;
       }
+      let thirdPages = [];
+      let thirdPagesLinks = [];
+      for (let i = 0; i < secondPage.length; i++) {
+        const response = await axios.get(
+          `https://en.wikipedia.org/w/api.php?origin=*&action=query&prop=links&pllimit=${val}&format=json&titles=${secondPage[i].id}`
+        );
+        const pages = response.data.query.pages;
+        const pageId = Object.keys(pages)[0];
+        const rawContent = pages[pageId].links.map((link) => link.title);
+        const thirdPage = rawContent.map((title) => ({ id: title }));
+        const thirdPageLink = thirdPage.map((link) => ({ source: secondPage[i].id, target: link }));
+        thirdPages = [...thirdPages, ...thirdPage];
+        thirdPagesLinks = [...thirdPagesLinks, ...thirdPageLink];
+      }
+      const thirdPage = thirdPages;
+      const thirdPageLinks = thirdPagesLinks;
       if (depth === 2) {
-        let thirdPages = [];
-        let thirdPagesLinks = [];
-        for (let i = 0; i < secondPage.length; i++) {
+        setNodesAmout(Array.from(new Set([...firstPage, ...secondPage, ...thirdPage])).length);
+        setLinksAmout(Array.from(new Set([...secondPageLinks, ...thirdPageLinks])).length);
+        loadGraph(Array.from(new Set([...firstPage, ...secondPage, ...thirdPage])), Array.from(new Set([...secondPageLinks, ...thirdPageLinks])));
+        setLoading(false);
+        return;
+      }
+      if (depth === 3) {
+        let fourthPages = [];
+        let fourthPagesLinks = [];
+        for (let i = 0; i < thirdPage.length; i++) {
           const response = await axios.get(
-            `https://en.wikipedia.org/w/api.php?origin=*&action=query&prop=links&pllimit=${val}&format=json&titles=${secondPage[i].id}`
+            `https://en.wikipedia.org/w/api.php?origin=*&action=query&prop=links&pllimit=${val}&format=json&titles=${thirdPage[i].id}`
           );
           const pages = response.data.query.pages;
           const pageId = Object.keys(pages)[0];
           const rawContent = pages[pageId].links.map((link) => link.title);
-          const thirdPage = rawContent.map((title) => ({ id: title }));
-          const thirdPageLink = thirdPage.map((link) => ({ source: secondPage[i].id, target: link }));
-          thirdPages = [...thirdPages, ...thirdPage];
-          thirdPagesLinks = [...thirdPagesLinks, ...thirdPageLink];
+          const fourthPage = rawContent.map((title) => ({ id: title }));
+          const fourthPageLink = fourthPage.map((link) => ({ source: thirdPage[i].id, target: link }));
+          fourthPages = [...fourthPages, ...fourthPage];
+          fourthPagesLinks = [...fourthPagesLinks, ...fourthPageLink];
         }
-        const thirdPage = thirdPages;
-        const thirdPageLinks = thirdPagesLinks;
-        if (depth === 3) {
-          let fourthPages = [];
-          let fourthPagesLinks = [];
-          for (let i = 0; i < thirdPage.length; i++) {
-            const response = await axios.get(
-              `https://en.wikipedia.org/w/api.php?origin=*&action=query&prop=links&pllimit=${val}&format=json&titles=${thirdPage[i].id}`
-            );
-            const pages = response.data.query.pages;
-            const pageId = Object.keys(pages)[0];
-            const rawContent = pages[pageId].links.map((link) => link.title);
-            const fourthPage = rawContent.map((title) => ({ id: title }));
-            const fourthPageLink = fourthPage.map((link) => ({ source: thirdPage[i].id, target: link }));
-            fourthPages = [...fourthPages, ...fourthPage];
-            fourthPagesLinks = [...fourthPagesLinks, ...fourthPageLink];
-          }
-          const fourthPage = fourthPages;
-          const fourthPageLinks = fourthPagesLinks;
-          setNodesAmout(Array.from(new Set([...firstPage, ...secondPage, ...thirdPage, ...fourthPage])).length);
-          setLinksAmout(Array.from(new Set([...secondPageLinks, ...thirdPageLinks, ...fourthPageLinks])).length);
-          loadGraph(Array.from(new Set([...firstPage, ...secondPage, ...thirdPage, ...fourthPage])), Array.from(new Set([...secondPageLinks, ...thirdPageLinks, ...fourthPageLinks])));
-        } else {
-          setNodesAmout(Array.from(new Set([...firstPage, ...secondPage, ...thirdPage])).length);
-          setLinksAmout(Array.from(new Set([...secondPageLinks, ...thirdPageLinks])).length);
-          loadGraph(Array.from(new Set([...firstPage, ...secondPage, ...thirdPage])), Array.from(new Set([...secondPageLinks, ...thirdPageLinks])));
-        }
+        const fourthPage = fourthPages;
+        const fourthPageLinks = fourthPagesLinks;
+        setNodesAmout(Array.from(new Set([...firstPage, ...secondPage, ...thirdPage, ...fourthPage])).length);
+        setLinksAmout(Array.from(new Set([...secondPageLinks, ...thirdPageLinks, ...fourthPageLinks])).length);
+        loadGraph(Array.from(new Set([...firstPage, ...secondPage, ...thirdPage, ...fourthPage])), Array.from(new Set([...secondPageLinks, ...thirdPageLinks, ...fourthPageLinks])));
+        setLoading(false);
       }
-      setLoading(false);
     } catch (error) {
       console.error('Error fetching Wikipedia page:', error);
       setLoading(false);
@@ -221,7 +224,7 @@ function WikipediaPage() {
         <span> Links: {linksCount === 100 ? 'max' : linksCount}</span>
         <input
           type="range"
-          min="10"
+          min="2"
           max="100"
           value={linksCount}
           onChange={(e) => setLinksCount(parseInt(e.target.value))}
